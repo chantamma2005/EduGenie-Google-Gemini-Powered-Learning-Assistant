@@ -1,0 +1,14 @@
+fastapi
+uvicorn
+jinja2
+google-generativeai
+python-dotenv
+requests
+transformers
+torch
+sentencepiece
+accelerate
+numpy
+pandas
+google-genai
+pydantic
