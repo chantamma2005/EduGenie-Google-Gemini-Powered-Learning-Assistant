@@ -1,0 +1,354 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EduGenie AI</title>
+
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+
+<body>
+
+<div class="page">
+
+<div class="container">
+
+<h1>🧠 Welcome to EduGenie</h1>
+
+<p class="subtitle">
+Your Personal AI Learning Assistant
+</p>
+
+<!-- ================= QUESTION ================= -->
+
+<div class="card">
+
+<h2>❓ Ask EduGenie a Question</h2>
+
+<div class="row">
+
+<input
+type="text"
+id="question"
+placeholder="Ask any educational question...">
+
+<button onclick="askQuestion()">
+Get Answer
+</button>
+
+</div>
+
+<div
+class="output"
+id="answerOutput">
+
+</div>
+
+</div>
+
+<!-- ================= EXPLANATION ================= -->
+
+<div class="card">
+
+<h2>📖 Need an Explanation?</h2>
+
+<div class="row">
+
+<input
+type="text"
+id="topic"
+placeholder="Enter any topic...">
+
+<button onclick="getExplanation()">
+Explain
+</button>
+
+</div>
+
+<div
+class="output"
+id="explanationOutput">
+
+</div>
+
+</div>
+
+<!-- ================= SUMMARIZATION ================= -->
+
+<div class="card">
+
+<h2>📝 Summarize Text</h2>
+
+<textarea
+id="summaryText"
+placeholder="Paste a long paragraph here..."></textarea>
+
+<button
+class="full-btn"
+onclick="summarizeText()">
+
+Summarize
+
+</button>
+
+<div
+class="output"
+id="summaryOutput">
+
+</div>
+
+</div>
+
+<!-- ================= QUIZ ================= -->
+
+<div class="card">
+
+<h2>📚 Generate Quiz</h2>
+
+<div class="row">
+
+<input
+type="text"
+id="quizTopic"
+placeholder="Example: Artificial Intelligence">
+
+<button
+onclick="generateQuiz()">
+
+Generate Quiz
+
+</button>
+
+</div>
+
+<div
+class="output"
+id="quizOutput">
+
+</div>
+
+</div>
+
+<!-- ================= RECOMMENDATION ================= -->
+
+<div class="card">
+
+<h2>🎯 Learning Recommendations</h2>
+
+<div class="row">
+
+<input
+type="text"
+id="recommendTopic"
+placeholder="Example: Machine Learning">
+
+<button
+onclick="getRecommendation()">
+
+Get Recommendation
+
+</button>
+
+</div>
+
+<div
+class="output"
+id="recommendOutput">
+
+</div>
+
+</div>
+
+</div>
+
+</div>
+
+<script>
+
+// ================= ASK QUESTION =================
+
+async function askQuestion(){
+
+const question =
+document.getElementById("question").value;
+
+if(question.trim()==""){
+
+alert("Please enter a question.");
+
+return;
+
+}
+
+document.getElementById("answerOutput").innerHTML="Loading...";
+
+const response = await fetch("/qa",{
+
+method:"POST",
+
+headers:{
+
+"Content-Type":"application/json"
+
+},
+
+body:JSON.stringify({
+
+question:question
+
+})
+
+});
+
+const data = await response.json();
+
+document.getElementById("answerOutput").innerHTML =
+data.answer;
+
+}
+
+// ================= EXPLANATION =================
+
+async function getExplanation(){
+
+const topic =
+document.getElementById("topic").value;
+
+if(topic.trim()==""){
+
+alert("Please enter a topic.");
+
+return;
+
+}
+
+document.getElementById("explanationOutput").innerHTML="Loading...";
+
+const response = await fetch("/explain",{
+
+method:"POST",
+
+headers:{
+
+"Content-Type":"application/json"
+
+},
+
+body:JSON.stringify({
+
+topic:topic
+
+})
+
+});
+
+const data = await response.json();
+
+document.getElementById("explanationOutput").innerHTML =
+data.explanation;
+
+}
+// ================= SUMMARIZATION =================
+
+async function summarizeText(){
+
+    const text = document.getElementById("summaryText").value;
+
+    if(text.trim()==""){
+        alert("Please enter some text.");
+        return;
+    }
+
+    document.getElementById("summaryOutput").innerHTML = "Loading...";
+
+    const response = await fetch("/summarize",{
+
+        method:"POST",
+
+        headers:{
+            "Content-Type":"application/json"
+        },
+
+        body:JSON.stringify({
+            text:text
+        })
+
+    });
+
+    const data = await response.json();
+
+    document.getElementById("summaryOutput").innerHTML =
+        data.summary || "No summary generated.";
+
+}
+
+
+// ================= QUIZ =================
+
+async function generateQuiz(){
+
+    const topic = document.getElementById("quizTopic").value;
+
+    if(topic.trim()==""){
+        alert("Please enter a topic.");
+        return;
+    }
+
+    document.getElementById("quizOutput").innerHTML = "Generating quiz...";
+
+    const response = await fetch("/quiz",{
+
+        method:"POST",
+
+        headers:{
+            "Content-Type":"application/json"
+        },
+
+        body:JSON.stringify({
+            text:topic
+        })
+
+    });
+
+    const data = await response.json();
+
+    document.getElementById("quizOutput").innerHTML =
+        "<pre>"+data.quiz+"</pre>";
+
+}
+
+
+// ================= LEARNING RECOMMENDATION =================
+
+async function getRecommendation(){
+
+    const topic = document.getElementById("recommendTopic").value;
+
+    if(topic.trim()==""){
+        alert("Please enter a topic.");
+        return;
+    }
+
+    document.getElementById("recommendOutput").innerHTML="Loading...";
+
+    const response = await fetch(
+        "/learn/recommendations?topic="+encodeURIComponent(topic),
+        {
+            method:"POST"
+        }
+    );
+
+    const data = await response.json();
+
+    document.getElementById("recommendOutput").innerHTML =
+        data.recommendation;
+
+}
+
+</script>
+
+</body>
+
+</html>
